@@ -1,0 +1,14 @@
+{
+  "mode": "must_include",
+  "description": "Sparse required relations for a cluttered room detection-output fixture.",
+  "relations": [
+    {"source": "coffee_table_1", "relation": "right_of", "target": "sofa_1"},
+    {"source": "coffee_table_1", "relation": "in_front_of", "target": "sofa_1"},
+    {"source": "bookshelf_1", "relation": "behind", "target": "sofa_1"},
+    {"source": "toy_bin_1", "relation": "overlaps", "target": "coffee_table_1"},
+    {"source": "toy_bin_1", "relation": "near", "target": "coffee_table_1"},
+    {"source": "lamp_1", "relation": "right_of", "target": "sofa_1"},
+    {"source": "plant_1", "relation": "left_of", "target": "bookshelf_1"},
+    {"source": "rug_1", "relation": "overlaps", "target": "coffee_table_1"}
+  ]
+}

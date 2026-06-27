@@ -1,0 +1,62 @@
+{
+  "image_width": 1400,
+  "image_height": 900,
+  "detections": [
+    {
+      "id": "sofa_1",
+      "label": "sofa",
+      "bbox": [120, 420, 560, 820],
+      "confidence": 0.96,
+      "depth": 2.5
+    },
+    {
+      "id": "coffee_table_1",
+      "label": "coffee_table",
+      "bbox": [460, 570, 820, 780],
+      "confidence": 0.93,
+      "depth": 2.0
+    },
+    {
+      "id": "lamp_1",
+      "label": "floor_lamp",
+      "bbox": [760, 250, 880, 820],
+      "confidence": 0.88,
+      "depth": 2.7
+    },
+    {
+      "id": "bookshelf_1",
+      "label": "bookshelf",
+      "bbox": [1010, 180, 1320, 840],
+      "confidence": 0.95,
+      "depth": 4.2
+    },
+    {
+      "id": "plant_1",
+      "label": "plant",
+      "bbox": [900, 420, 1030, 820],
+      "confidence": 0.84,
+      "depth": 3.4
+    },
+    {
+      "id": "toy_bin_1",
+      "label": "toy_bin",
+      "bbox": [520, 690, 710, 850],
+      "confidence": 0.82,
+      "depth": 1.8
+    },
+    {
+      "id": "rug_1",
+      "label": "rug",
+      "bbox": [350, 620, 950, 880],
+      "confidence": 0.76,
+      "depth": 2.1
+    },
+    {
+      "id": "loose_shoe_1",
+      "label": "shoe",
+      "bbox": [1110, 790, 1190, 850],
+      "confidence": 0.18,
+      "depth": 3.9
+    }
+  ]
+}

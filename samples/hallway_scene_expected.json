@@ -1,0 +1,14 @@
+{
+  "mode": "must_include",
+  "description": "Sparse required relations for a hallway detection-output fixture.",
+  "relations": [
+    {"source": "bench_1", "relation": "left_of", "target": "entry_door_1"},
+    {"source": "bench_1", "relation": "in_front_of", "target": "entry_door_1"},
+    {"source": "trash_can_1", "relation": "right_of", "target": "bench_1"},
+    {"source": "trash_can_1", "relation": "near", "target": "bench_1"},
+    {"source": "exit_sign_1", "relation": "above", "target": "entry_door_1"},
+    {"source": "entry_door_1", "relation": "behind", "target": "bench_1"},
+    {"source": "fire_extinguisher_1", "relation": "behind", "target": "trash_can_1"},
+    {"source": "floor_marker_1", "relation": "below", "target": "ceiling_light_1"}
+  ]
+}

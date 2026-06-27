@@ -1,0 +1,13 @@
+{
+  "mode": "must_include",
+  "description": "Sparse required relations for close and partially overlapping detections.",
+  "relations": [
+    {"source": "chair_a", "relation": "left_of", "target": "chair_b"},
+    {"source": "chair_a", "relation": "near", "target": "chair_b"},
+    {"source": "chair_a", "relation": "overlaps", "target": "chair_b"},
+    {"source": "poster_1", "relation": "above", "target": "chair_a"},
+    {"source": "small_table_1", "relation": "right_of", "target": "chair_a"},
+    {"source": "crate_1", "relation": "left_of", "target": "small_table_1"},
+    {"source": "chair_b", "relation": "near", "target": "small_table_1"}
+  ]
+}

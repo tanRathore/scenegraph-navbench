@@ -1,0 +1,12 @@
+{
+  "mode": "must_include",
+  "description": "Sparse required relations for a scene with no depth estimates; depth relations should not be inferred.",
+  "relations": [
+    {"source": "sink_1", "relation": "above", "target": "counter_1"},
+    {"source": "mug_1", "relation": "right_of", "target": "sink_1"},
+    {"source": "stool_1", "relation": "right_of", "target": "counter_1"},
+    {"source": "window_1", "relation": "above", "target": "stool_1"},
+    {"source": "towel_1", "relation": "near", "target": "sink_1"},
+    {"source": "mug_1", "relation": "overlaps", "target": "sink_1"}
+  ]
+}

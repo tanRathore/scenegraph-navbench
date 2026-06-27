@@ -1,0 +1,47 @@
+{
+  "image_width": 1000,
+  "image_height": 700,
+  "detections": [
+    {
+      "id": "chair_a",
+      "label": "chair",
+      "bbox": [250, 360, 430, 640],
+      "confidence": 0.93,
+      "depth": 2.4
+    },
+    {
+      "id": "chair_b",
+      "label": "chair",
+      "bbox": [390, 350, 570, 640],
+      "confidence": 0.91,
+      "depth": 2.45
+    },
+    {
+      "id": "small_table_1",
+      "label": "small_table",
+      "bbox": [480, 390, 680, 620],
+      "confidence": 0.89,
+      "depth": 2.5
+    },
+    {
+      "id": "plant_shadow_1",
+      "label": "plant_shadow",
+      "bbox": [670, 120, 790, 500],
+      "confidence": 0.64
+    },
+    {
+      "id": "poster_1",
+      "label": "poster",
+      "bbox": [340, 80, 620, 210],
+      "confidence": 0.86,
+      "depth": 4.8
+    },
+    {
+      "id": "crate_1",
+      "label": "crate",
+      "bbox": [120, 500, 260, 650],
+      "confidence": 0.81,
+      "depth": 2.2
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scenegraph-navbench"
+version = "0.1.0"
+description = "Deterministic scene graph construction for embodied AI navigation benchmarks."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+]
+
+[project.scripts]
+scenegraph-navbench = "scenegraph_navbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["scenegraph_navbench*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

@@ -1,0 +1,55 @@
+{
+  "image_width": 1600,
+  "image_height": 900,
+  "detections": [
+    {
+      "id": "entry_door_1",
+      "label": "door",
+      "bbox": [1250, 220, 1540, 860],
+      "confidence": 0.97,
+      "depth": 7.5
+    },
+    {
+      "id": "bench_1",
+      "label": "bench",
+      "bbox": [140, 560, 520, 840],
+      "confidence": 0.93,
+      "depth": 3.1
+    },
+    {
+      "id": "trash_can_1",
+      "label": "trash_can",
+      "bbox": [530, 620, 680, 850],
+      "confidence": 0.88,
+      "depth": 3.4
+    },
+    {
+      "id": "fire_extinguisher_1",
+      "label": "fire_extinguisher",
+      "bbox": [1050, 430, 1140, 700],
+      "confidence": 0.91,
+      "depth": 5.6
+    },
+    {
+      "id": "exit_sign_1",
+      "label": "exit_sign",
+      "bbox": [1250, 130, 1510, 210],
+      "confidence": 0.86,
+      "depth": 7.4
+    },
+    {
+      "id": "ceiling_light_1",
+      "label": "ceiling_light",
+      "bbox": [700, 60, 900, 140],
+      "confidence": 0.79,
+      "depth": 6.5
+    },
+    {
+      "id": "floor_marker_1",
+      "label": "floor_marker",
+      "bbox": [720, 760, 930, 850],
+      "confidence": 0.82,
+      "depth": 4.6
+    }
+  ]
+}

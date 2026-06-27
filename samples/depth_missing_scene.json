@@ -1,0 +1,42 @@
+{
+  "image_width": 1200,
+  "image_height": 800,
+  "detections": [
+    {
+      "id": "counter_1",
+      "label": "counter",
+      "bbox": [80, 420, 520, 760],
+      "confidence": 0.95
+    },
+    {
+      "id": "sink_1",
+      "label": "sink",
+      "bbox": [190, 330, 420, 520],
+      "confidence": 0.91
+    },
+    {
+      "id": "mug_1",
+      "label": "mug",
+      "bbox": [360, 380, 450, 470],
+      "confidence": 0.87
+    },
+    {
+      "id": "stool_1",
+      "label": "stool",
+      "bbox": [680, 500, 860, 780],
+      "confidence": 0.88
+    },
+    {
+      "id": "window_1",
+      "label": "window",
+      "bbox": [700, 90, 1100, 330],
+      "confidence": 0.9
+    },
+    {
+      "id": "towel_1",
+      "label": "towel",
+      "bbox": [500, 300, 620, 540],
+      "confidence": 0.8
+    }
+  ]
+}

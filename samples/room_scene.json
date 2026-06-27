@@ -1,0 +1,48 @@
+{
+  "image_width": 1280,
+  "image_height": 720,
+  "detections": [
+    {
+      "id": "door_1",
+      "label": "door",
+      "bbox": [960, 180, 1200, 700],
+      "confidence": 0.98,
+      "depth": 4.8
+    },
+    {
+      "id": "chair_1",
+      "label": "chair",
+      "bbox": [220, 360, 430, 680],
+      "confidence": 0.94,
+      "depth": 2.2
+    },
+    {
+      "id": "table_1",
+      "label": "table",
+      "bbox": [470, 330, 760, 640],
+      "confidence": 0.92,
+      "depth": 2.8
+    },
+    {
+      "id": "backpack_1",
+      "label": "backpack",
+      "bbox": [300, 500, 450, 690],
+      "confidence": 0.89,
+      "depth": 1.9
+    },
+    {
+      "id": "wall_art_1",
+      "label": "wall_art",
+      "bbox": [520, 90, 760, 240],
+      "confidence": 0.86,
+      "depth": 5.2
+    },
+    {
+      "id": "box_1",
+      "label": "box",
+      "bbox": [790, 500, 930, 680],
+      "confidence": 0.78,
+      "depth": 3.4
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "SceneGraphNavBench synthetic v0 benchmark",
+  "scenes": [
+    {
+      "scene": "samples/room_scene.json",
+      "expected": "samples/room_scene_expected.json"
+    },
+    {
+      "scene": "samples/hallway_scene.json",
+      "expected": "samples/hallway_scene_expected.json"
+    },
+    {
+      "scene": "samples/cluttered_room_scene.json",
+      "expected": "samples/cluttered_room_scene_expected.json"
+    },
+    {
+      "scene": "samples/depth_missing_scene.json",
+      "expected": "samples/depth_missing_scene_expected.json"
+    },
+    {
+      "scene": "samples/ambiguous_scene.json",
+      "expected": "samples/ambiguous_scene_expected.json"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "mode": "must_include",
+  "description": "Sparse required relation set for the v0 demo. These triples should be present in the generated graph; extra deterministic relations are not false positives in this mode.",
+  "relations": [
+    {"source": "chair_1", "relation": "left_of", "target": "door_1"},
+    {"source": "chair_1", "relation": "near", "target": "backpack_1"},
+    {"source": "backpack_1", "relation": "in_front_of", "target": "table_1"},
+    {"source": "wall_art_1", "relation": "above", "target": "table_1"},
+    {"source": "wall_art_1", "relation": "behind", "target": "chair_1"},
+    {"source": "box_1", "relation": "right_of", "target": "table_1"},
+    {"source": "door_1", "relation": "behind", "target": "chair_1"},
+    {"source": "table_1", "relation": "near", "target": "box_1"},
+    {"source": "backpack_1", "relation": "overlaps", "target": "chair_1"},
+    {"source": "door_1", "relation": "right_of", "target": "chair_1"},
+    {"source": "wall_art_1", "relation": "above", "target": "backpack_1"},
+    {"source": "chair_1", "relation": "in_front_of", "target": "door_1"}
+  ]
+}
