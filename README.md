@@ -4,13 +4,13 @@ SceneGraphNavBench is a computer vision and robotics benchmark foundation for co
 
 The benchmark tests spatial reasoning after perception. Given detections, it produces graph nodes for objects and directed spatial relations such as `left_of`, `near`, `overlaps`, `in_front_of`, and `behind`. Each relation includes a score and deterministic reason so later robot-agent queries can cite supporting evidence instead of inventing spatial claims.
 
-The v0 scope intentionally stops before the robot query runtime. There is no robot context, planner, agent loop, or model adapter yet. Those are meant to build on this baseline in a later feature session.
+The robot query runtime adds a deterministic world-frame layer on top of the filtered scene graph. It answers a focused set of robot questions when a separate navigation context supplies the robot pose and per-object positions, footprint radii, roles, and obstacle flags. It is a query layer, not a path planner or agent loop.
 
 ## Why Deterministic Scene Graphs
 
 Embodied AI systems often need to answer spatial questions such as "what is left of the door?" or "which object is closer to the robot?" If those answers are generated directly by a language model, small changes in wording or context can produce inconsistent spatial claims.
 
-SceneGraphNavBench makes spatial reasoning explicit. Geometry rules derive relations from centers, normalized distances, overlap, and depth. This reduces hallucinated spatial reasoning by keeping graph facts reproducible and inspectable.
+SceneGraphNavBench makes spatial reasoning explicit. Scene-graph rules derive visual relations from bounding-box centers, normalized distances, overlap, and depth. Robot queries use separate world-frame coordinates and geometry. This reduces hallucinated spatial reasoning by keeping both kinds of facts reproducible and inspectable.
 
 ## Concepts
 
@@ -19,18 +19,23 @@ SceneGraphNavBench makes spatial reasoning explicit. Geometry rules derive relat
 - Reasons explain the deterministic measurement behind a relation, such as center coordinates, normalized distance thresholds, IoU, or depth comparison.
 - Expected files can be exhaustive gold graphs or sparse must-include checklists.
 - Benchmark manifests group multiple scene fixtures into a repeatable synthetic benchmark run.
+- Navigation contexts contain an explicit world-frame robot pose and per-object navigation metadata.
+- Robot query results include explicit statuses, selected object ids, deterministic reasons, and measured evidence.
 
 ## Repository Architecture
 
 - `scenegraph_navbench/models.py` defines validated Pydantic models for detections, scenes, relations, and scene graphs.
 - `scenegraph_navbench/spatial.py` contains geometry helpers, `SpatialConfig`, and pairwise relation inference.
 - `scenegraph_navbench/graph.py` filters detections and builds scene graphs across all ordered object pairs.
+- `scenegraph_navbench/robot_context.py` defines validated world-frame robot and object metadata.
+- `scenegraph_navbench/robot_geometry.py` contains pure distance, heading/FOV, and corridor geometry.
+- `scenegraph_navbench/query_runtime.py` implements deterministic robot queries and typed results.
 - `scenegraph_navbench/evaluator.py` loads expected triples and computes mode-aware evaluation metrics.
 - `scenegraph_navbench/benchmark.py` loads benchmark manifests and aggregates per-scene results.
 - `scenegraph_navbench/export.py` exports scene graphs as JSON dictionaries or Graphviz DOT text.
 - `scenegraph_navbench/cli.py` provides single-scene and benchmark commands.
 - `samples/` contains synthetic detection-output fixtures and a benchmark manifest.
-- `tests/` covers spatial inference, graph construction, evaluation, benchmark loading, exports, and CLI benchmark mode.
+- `tests/` covers spatial inference, graph construction, robot geometry and queries, evaluation, benchmark loading, exports, and CLI modes.
 
 ## Installation
 
@@ -58,6 +63,30 @@ python -m scenegraph_navbench.cli samples/room_scene.json \
   --export-json /tmp/scenegraph.json \
   --export-dot /tmp/scenegraph.dot
 ```
+
+## Robot Query Runtime
+
+Robot queries require a separate navigation context such as `samples/room_scene_navigation.json`. Detection JSON remains unchanged. Each navigation object supplies an `object_id`, world-frame `x` and `y`, footprint `radius`, semantic `role`, and `is_obstacle` flag; the context also supplies the robot pose, robot radius, and coordinate-frame id.
+
+Robot navigation calculations use only these explicit world-frame positions. They do not reuse bounding-box pixels, bounding-box size, scalar detection depth, or the scene graph's image-space `near` relation.
+
+The runtime supports deterministic answers for:
+
+- the closest object to the robot;
+- the nearest object in front of the robot within its heading field of view;
+- objects near the explicitly marked exit;
+- obstacle footprints blocking the corridor to the exit;
+- the nearest obstacle in front that the robot should avoid.
+
+Run the robot demo with:
+
+```bash
+python -m scenegraph_navbench.cli samples/room_scene.json \
+  --navigation samples/room_scene_navigation.json \
+  --show-agent-demo
+```
+
+The demo prints the robot context, fixed questions, typed deterministic answers, and evidence traces. Evidence records expose the world-frame measurements and thresholds behind each answer—for example distance, heading offset, field of view, corridor clearance, segment projection, and intersection status. Missing required positions produce an explicit `insufficient_data` result rather than a guess.
 
 ## Benchmark CLI
 
@@ -153,4 +182,4 @@ Defaults preserve the v0 demo behavior. Tests cover threshold changes so later b
 
 ## Limitations And Next Steps
 
-This v0 baseline uses deterministic image-space geometry over synthetic detection JSON. It does not yet model camera intrinsics, free-space topology, support surfaces, robot pose, object affordances, occlusion, temporal consistency, or natural-language robot queries. The next layer should add the robot query runtime and richer task-level evaluation on top of this benchmark foundation.
+The scene graph still uses synthetic image-space detections and does not model camera intrinsics, support surfaces, occlusion, or temporal consistency. The robot runtime requires world-frame metadata supplied by the caller; it does not infer world positions from image coordinates. It performs direct deterministic queries and straight-corridor blocker checks, not free-space mapping, path planning, control, an agent loop, or natural-language interpretation.

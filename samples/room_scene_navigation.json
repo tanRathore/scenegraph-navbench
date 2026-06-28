@@ -1,0 +1,59 @@
+{
+  "frame_id": "map",
+  "robot_pose": {
+    "x": 0.0,
+    "y": 0.0,
+    "heading_radians": 0.0
+  },
+  "robot_radius": 0.3,
+  "objects": [
+    {
+      "object_id": "door_1",
+      "x": 5.8,
+      "y": 1.4,
+      "radius": 0.5,
+      "role": "exit",
+      "is_obstacle": false
+    },
+    {
+      "object_id": "chair_1",
+      "x": 2.0,
+      "y": -1.5,
+      "radius": 0.45,
+      "role": null,
+      "is_obstacle": true
+    },
+    {
+      "object_id": "table_1",
+      "x": 3.0,
+      "y": -0.4,
+      "radius": 0.75,
+      "role": null,
+      "is_obstacle": true
+    },
+    {
+      "object_id": "backpack_1",
+      "x": 1.7,
+      "y": -1.0,
+      "radius": 0.25,
+      "role": null,
+      "is_obstacle": true
+    },
+    {
+      "object_id": "wall_art_1",
+      "x": 5.5,
+      "y": -0.2,
+      "radius": 0.1,
+      "role": null,
+      "is_obstacle": false
+    },
+    {
+      "object_id": "box_1",
+      "x": 4.0,
+      "y": 0.8,
+      "radius": 0.35,
+      "role": null,
+      "is_obstacle": true
+    }
+  ]
+}

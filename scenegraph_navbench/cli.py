@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Sequence
 
@@ -13,6 +14,22 @@ from scenegraph_navbench.evaluator import evaluate_relations, load_expected_rela
 from scenegraph_navbench.export import write_scene_graph_dot, write_scene_graph_json
 from scenegraph_navbench.graph import build_scene_graph
 from scenegraph_navbench.models import Relation, Scene
+from scenegraph_navbench.query_runtime import (
+    QueryStatus,
+    RobotQueryResult,
+    RobotQueryRuntime,
+)
+from scenegraph_navbench.robot_context import NavigationContext
+
+
+@dataclass(frozen=True)
+class AgentDemoQuestion:
+    """One CLI demo question and its deterministic runtime result."""
+
+    name: str
+    question: str
+    result: RobotQueryResult | None
+    skip_reason: str | None = None
 
 
 def main(argv: Sequence[str] | None = None) -> None:
@@ -73,6 +90,16 @@ def _build_parser() -> argparse.ArgumentParser:
         type=Path,
         help="Write the single-scene graph as Graphviz DOT.",
     )
+    parser.add_argument(
+        "--navigation",
+        type=Path,
+        help="World-frame navigation context JSON for the robot demo.",
+    )
+    parser.add_argument(
+        "--show-agent-demo",
+        action="store_true",
+        help="Run and display deterministic robot queries.",
+    )
     return parser
 
 
@@ -87,9 +114,15 @@ def _validate_args(
             parser.error("--expected is only valid for single-scene mode")
         if args.export_json is not None or args.export_dot is not None:
             parser.error("export flags are only valid for single-scene mode")
+        if args.navigation is not None or args.show_agent_demo:
+            parser.error("robot demo flags are only valid for single-scene mode")
 
     elif args.scene is None:
         parser.error("provide a scene path or --benchmark")
+    elif args.show_agent_demo and args.navigation is None:
+        parser.error("--show-agent-demo requires --navigation")
+    elif args.navigation is not None and not args.show_agent_demo:
+        parser.error("--navigation requires --show-agent-demo")
 
 
 def _run_scene(args: argparse.Namespace) -> None:
@@ -134,6 +167,145 @@ def _run_scene(args: argparse.Namespace) -> None:
         write_scene_graph_dot(graph, args.export_dot)
         print()
         print(f"Exported DOT: {args.export_dot}")
+
+    if args.show_agent_demo:
+        navigation_context = NavigationContext.model_validate_json(
+            args.navigation.read_text(encoding="utf-8")
+        )
+        runtime = RobotQueryRuntime(graph, navigation_context)
+        print()
+        print_agent_demo(navigation_context, runtime)
+
+
+def print_agent_demo(
+    context: NavigationContext,
+    runtime: RobotQueryRuntime,
+) -> None:
+    """Print robot context, fixed demo questions, answers, and evidence."""
+    print("Robot context")
+    print(f"- frame: {context.frame_id}")
+    print(
+        "- pose: "
+        f"x={context.robot_pose.x:.3f}, "
+        f"y={context.robot_pose.y:.3f}, "
+        f"heading_radians={context.robot_pose.heading_radians:.3f}"
+    )
+    print(f"- robot radius: {context.robot_radius:.3f}")
+    print(f"- navigation objects: {len(context.objects)}")
+    for item in context.objects:
+        position = (
+            f"({item.x:.3f}, {item.y:.3f})"
+            if item.x is not None and item.y is not None
+            else "unknown"
+        )
+        print(
+            f"  - {item.object_id}: position={position}, "
+            f"radius={item.radius:.3f}, role={item.role or 'none'}, "
+            f"obstacle={'yes' if item.is_obstacle else 'no'}"
+        )
+
+    questions = _agent_demo_questions(runtime)
+
+    print()
+    print("Questions")
+    for index, item in enumerate(questions, start=1):
+        print(f"{index}. {item.question}")
+
+    print()
+    print("Deterministic answers")
+    for index, item in enumerate(questions, start=1):
+        if item.result is None:
+            print(f"{index}. {item.name}: not evaluated")
+            print(f"   reason: {item.skip_reason}")
+            continue
+
+        object_ids = ", ".join(item.result.object_ids) or "none"
+        print(f"{index}. {item.name}: {item.result.status.value}")
+        print(f"   objects: {object_ids}")
+        print(f"   reason: {item.result.reason}")
+
+    print()
+    print("Evidence traces")
+    for index, item in enumerate(questions, start=1):
+        print(f"{index}. {item.name}")
+        if item.result is None:
+            print(f"   - not evaluated: {item.skip_reason}")
+            continue
+        if not item.result.evidence:
+            print("   - no evidence records")
+            continue
+
+        for evidence in item.result.evidence:
+            measurements = ", ".join(
+                f"{name}={_format_measurement(value)}"
+                for name, value in evidence.measurements.items()
+            )
+            suffix = f" [{measurements}]" if measurements else ""
+            print(
+                f"   - {evidence.object_id}: {evidence.reason}{suffix}"
+            )
+
+
+def _agent_demo_questions(runtime: RobotQueryRuntime) -> list[AgentDemoQuestion]:
+    exit_result = runtime.exit_target()
+    questions = [
+        AgentDemoQuestion(
+            name="closest_object",
+            question="What is the closest object to the robot?",
+            result=runtime.closest_object(),
+        ),
+        AgentDemoQuestion(
+            name="object_in_front",
+            question="What object is in front of the robot?",
+            result=runtime.object_in_front(),
+        ),
+        AgentDemoQuestion(
+            name="exit_target",
+            question="Which object should the robot move toward to exit?",
+            result=exit_result,
+        ),
+    ]
+
+    if exit_result.status == QueryStatus.OK and len(exit_result.object_ids) == 1:
+        exit_id = exit_result.object_ids[0]
+        near_result = runtime.objects_near(exit_id)
+        blocker_result = runtime.blockers_for(exit_id)
+        skip_reason = None
+    else:
+        near_result = None
+        blocker_result = None
+        skip_reason = "A single exit target was not resolved."
+
+    questions.extend(
+        [
+            AgentDemoQuestion(
+                name="objects_near_exit",
+                question="Which objects are near the exit target?",
+                result=near_result,
+                skip_reason=skip_reason,
+            ),
+            AgentDemoQuestion(
+                name="blockers_for_exit",
+                question="Does anything block the corridor to the exit target?",
+                result=blocker_result,
+                skip_reason=skip_reason,
+            ),
+            AgentDemoQuestion(
+                name="object_to_avoid",
+                question="Which object in front should the robot avoid?",
+                result=runtime.object_to_avoid(),
+            ),
+        ]
+    )
+    return questions
+
+
+def _format_measurement(value: float | int | str | bool) -> str:
+    if isinstance(value, bool):
+        return str(value).lower()
+    if isinstance(value, float):
+        return f"{value:.3f}"
+    return str(value)
 
 
 def print_relation_summary(
